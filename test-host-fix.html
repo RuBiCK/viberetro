@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Host Fix</title>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Testing Host Detection Fix</h1>
+    <div id="status"></div>
+    <div id="results"></div>
+
+    <script>
+        const status = document.getElementById('status');
+        const results = document.getElementById('results');
+
+        async function test() {
+            status.innerHTML = '<p>Creating session...</p>';
+
+            // 1. Create session
+            const response = await fetch('http://localhost:3001/api/sessions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    template: 'start_stop_continue',
+                    timerDuration: 300,
+                    votesPerUser: 3
+                })
+            });
+
+            const { sessionId, hostId } = await response.json();
+            status.innerHTML += `<p>✓ Session created: ${sessionId}</p>`;
+            status.innerHTML += `<p>Host ID: ${hostId}</p>`;
+
+            // 2. Join as host
+            const socket = io('http://localhost:3001');
+
+            socket.on('connect', () => {
+                status.innerHTML += '<p>✓ Socket connected</p>';
+
+                // Join with hostId
+                socket.emit('join:session', {
+                    sessionId,
+                    displayName: 'Test Host',
+                    hostId
+                });
+            });
+
+            socket.on('session:state', (data) => {
+                status.innerHTML += '<p>✓ Received session state</p>';
+
+                // Check if user is marked as host
+                const currentUser = data.users.find(u => u.displayName === 'Test Host');
+
+                if (currentUser) {
+                    if (currentUser.isHost) {
+                        results.innerHTML = `
+                            <h2 style="color: green;">✓ SUCCESS!</h2>
+                            <p>Host detection is working correctly!</p>
+                            <pre>${JSON.stringify(currentUser, null, 2)}</pre>
+                        `;
+                    } else {
+                        results.innerHTML = `
+                            <h2 style="color: red;">✗ FAILED</h2>
+                            <p>User is not marked as host!</p>
+                            <pre>${JSON.stringify(currentUser, null, 2)}</pre>
+                        `;
+                    }
+                }
+            });
+
+            socket.on('error', (error) => {
+                results.innerHTML = `<h2 style="color: red;">Error: ${error.message}</h2>`;
+            });
+        }
+
+        // Run test
+        test();
+    </script>
+</body>
+</html>
