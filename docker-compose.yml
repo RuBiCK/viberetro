@@ -1,0 +1,71 @@
+# VibeRetro - Sprint Retrospective Tool
+#
+# Production deployment configuration:
+# - Frontend: https://viberetro.marcote.net (port 3002 → 3000)
+# - Backend API: https://viberetroapi.marcote.net (port 3001)
+#
+# Optional environment variables:
+# - FRONTEND_URL: Override frontend domain (default: https://viberetro.marcote.net)
+# - BACKEND_URL: Override backend API domain (default: https://viberetroapi.marcote.net)
+# - CORS_ALLOW_ALL: Set to 'true' to allow all origins (default: false) - useful for testing with IP addresses
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: retro-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_PATH=/app/data/retro.db
+      - SESSION_CLEANUP_INTERVAL=3600000
+      - MAX_SESSION_AGE=86400000
+      - CORS_ORIGIN=${FRONTEND_URL:-https://viberetro.marcote.net}
+      - CORS_ALLOW_ALL=${CORS_ALLOW_ALL:-false}
+    volumes:
+      - sqlite-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - retro-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: retro-frontend
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=production
+      - HOSTNAME=0.0.0.0
+      - PORT=3000
+      - NEXT_PUBLIC_API_URL=${BACKEND_URL:-https://viberetroapi.marcote.net}
+      - NEXT_PUBLIC_SOCKET_URL=${BACKEND_URL:-https://viberetroapi.marcote.net}
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - retro-network
+
+volumes:
+  sqlite-data:
+    driver: local
+
+networks:
+  retro-network:
+    driver: bridge

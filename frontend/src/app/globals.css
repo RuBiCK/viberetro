@@ -1,0 +1,269 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Spotify-inspired light theme */
+  --background: #f5f7fa;
+  --background-elevated: #ffffff;
+  --background-card: #ffffff;
+  --foreground: #1a1a1a;
+  --foreground-muted: #6b7280;
+  --accent-green: #1db954;
+  --accent-pink: #f037a5;
+  --accent-purple: #8b5cf6;
+  --accent-orange: #ff9800;
+
+  /* Themed section colors - lighter */
+  --top-hits-bg: rgba(29, 185, 84, 0.08);
+  --top-hits-border: #1db954;
+  --broken-record-bg: rgba(255, 152, 0, 0.08);
+  --broken-record-border: #ff9800;
+  --new-artist-bg: rgba(139, 92, 246, 0.08);
+  --new-artist-border: #8b5cf6;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .spotify-gradient {
+    background: linear-gradient(180deg, #e0e7ff 0%, #f5f7fa 100%);
+  }
+
+  .spotify-card {
+    background: var(--background-card);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .spotify-card:hover {
+    background: #fafbfc;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+}
+
+/* Custom scrollbar - Spotify style */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 6px;
+  border: 3px solid var(--background);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Card animations */
+.card-enter {
+  animation: cardEnter 0.3s ease-out;
+}
+
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Cluster merge animations */
+.cluster-merge {
+  animation: clusterMerge 0.5s ease-out;
+}
+
+@keyframes clusterMerge {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+.cluster-appear {
+  animation: clusterAppear 0.5s ease-out;
+}
+
+@keyframes clusterAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Cursor styles */
+.remote-cursor {
+  position: absolute;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.1s ease-out;
+}
+
+/* Improve input visibility, especially on mobile - Spotify style */
+input[type="text"],
+input[type="number"],
+textarea {
+  -webkit-text-fill-color: var(--foreground) !important;
+  color: var(--foreground) !important;
+  font-weight: 500;
+  font-size: 16px !important; /* Prevents zoom on iOS */
+  background: var(--background-card) !important;
+  border: 2px solid #e5e7eb !important;
+  border-radius: 8px !important;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+  border-color: var(--accent-green) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1) !important;
+}
+
+input[type="text"]::placeholder,
+input[type="number"]::placeholder,
+textarea::placeholder {
+  color: var(--foreground-muted);
+  opacity: 1;
+  font-weight: 400;
+}
+
+/* Spotify-style badge */
+.spotify-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(29, 185, 84, 0.15);
+  border: 1px solid var(--accent-green);
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--accent-green);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  /* Touch-friendly sizing */
+  button, .cursor-pointer {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Better card spacing on mobile */
+  .card-enter {
+    margin-bottom: 8px;
+  }
+
+  /* Prevent text zoom on input focus (iOS) */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+
+  /* Improve modal/dialog positioning on mobile */
+  .spotify-card {
+    border-radius: 12px;
+    margin: 8px;
+  }
+
+  /* Better scroll behavior on mobile */
+  body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+  }
+
+  /* Hide scrollbar on mobile */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* Tablet breakpoint */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .spotify-card {
+    padding: 16px;
+  }
+}
+
+/* Touch-friendly drag handles */
+.drag-handle {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Prevent drag ghost image on mobile */
+@media (hover: none) and (pointer: coarse) {
+  [draggable="true"] {
+    -webkit-user-drag: element;
+  }
+}
+
+/* Touch drag and drop styles */
+.touch-drop-over {
+  @apply ring-4 ring-primary ring-offset-2;
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+  background-color: rgba(139, 92, 246, 0.1);
+}
+
+.touch-dragging {
+  opacity: 0.3 !important;
+}
+
+/* Improve touch feedback */
+@media (hover: none) {
+  button:active, .cursor-pointer:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+  }
+}
