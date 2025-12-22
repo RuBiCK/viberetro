@@ -39,7 +39,7 @@ export class ActionItemModel {
     return rows.map(row => this.rowToActionItem(row));
   }
 
-  static update(id: string, updates: Partial<ActionItem>): void {
+  static update(id: string, updates: Partial<ActionItem>): ActionItem {
     const db = getDatabase();
     const fields: string[] = [];
     const values: any[] = [];
@@ -57,11 +57,20 @@ export class ActionItemModel {
       values.push(updates.completed ? 1 : 0);
     }
 
-    if (fields.length === 0) return;
+    if (fields.length === 0) {
+      // No updates, return current item
+      return this.findById(id)!;
+    }
 
     values.push(id);
     const stmt = db.prepare(`UPDATE action_items SET ${fields.join(', ')} WHERE id = ?`);
     stmt.run(...values);
+
+    return this.findById(id)!;
+  }
+
+  static getAllBySession(sessionId: string): ActionItem[] {
+    return this.findBySessionId(sessionId);
   }
 
   static delete(id: string): void {

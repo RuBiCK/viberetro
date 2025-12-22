@@ -232,7 +232,7 @@ app.get('/api/sessions/:id/history', (req, res) => {
 app.post('/api/sessions/:id/export', (req, res) => {
   try {
     const sessionId = req.params.id;
-    const markdown = ExportService.exportToMarkdown(sessionId);
+    const markdown = ExportService.exportSessionAsMarkdown(sessionId);
 
     if (!markdown) {
       return res.status(404).json({ error: 'Session not found or has no content' });

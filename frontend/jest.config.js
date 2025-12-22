@@ -21,6 +21,9 @@ const customJestConfig = {
   ],
   coverageDirectory: 'coverage',
   testTimeout: 10000,
+  transformIgnorePatterns: [
+    'node_modules/(?!(react-markdown|remark-gfm|rehype-sanitize|vfile|unist-.*|unified|bail|is-plain-obj|trough|mdast-.*|micromark.*|decode-named-character-reference|character-entities|property-information|hast-.*|space-separated-tokens|comma-separated-tokens|web-namespaces)/)',
+  ],
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

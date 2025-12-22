@@ -4,6 +4,7 @@
  */
 
 import { Database } from 'better-sqlite3';
+import { SessionStage, SessionStatus, TemplateType } from '../../shared/types';
 
 // Mock environment variables
 process.env.NODE_ENV = 'test';
@@ -45,9 +46,10 @@ export const createMockSession = (overrides = {}) => ({
   id: 'test-session-id',
   hostId: 'test-host-id',
   name: 'Test Session',
-  stage: 'setup',
+  stage: SessionStage.SETUP,
+  status: SessionStatus.ACTIVE,
   settings: {
-    template: 'start_stop_continue',
+    template: TemplateType.START_STOP_CONTINUE,
     columns: ['Start', 'Stop', 'Continue'],
     timerDuration: 300,
     votesPerUser: 5,
@@ -117,6 +119,7 @@ export const createMockActionItem = (overrides = {}) => ({
   sessionId: 'test-session-id',
   owner: 'Test User',
   task: 'Complete this task',
+  completed: false,
   createdAt: Date.now(),
   ...overrides,
 });
