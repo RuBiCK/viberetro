@@ -5,6 +5,17 @@ import { useSession } from '../../context/SessionContext';
 import { TEMPLATES } from '../../types';
 import ShareModal from '../ShareModal';
 
+// Animated dots component
+function AnimatedDots() {
+  return (
+    <span className="inline-flex">
+      <span className="animate-pulse-dot delay-0">.</span>
+      <span className="animate-pulse-dot delay-200">.</span>
+      <span className="animate-pulse-dot delay-400">.</span>
+    </span>
+  );
+}
+
 export default function SetupStage() {
   const { session, users, isHost, advanceStage } = useSession();
   const [showShareModal, setShowShareModal] = React.useState(false);
@@ -24,7 +35,7 @@ export default function SetupStage() {
           <p className="text-gray-600">
             {isHost
               ? 'Start when everyone has joined'
-              : 'Waiting for host to start the retrospective...'}
+              : <>Waiting for host to start the retrospective<AnimatedDots /></>}
           </p>
         </div>
 

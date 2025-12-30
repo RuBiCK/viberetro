@@ -106,7 +106,7 @@ export default function DashboardPage() {
   };
 
   const handleCreateNew = () => {
-    router.push('/');
+    router.push('/create');
   };
 
   const formatDate = (timestamp: number) => {
