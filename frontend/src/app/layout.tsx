@@ -3,8 +3,8 @@ import './globals.css'
 import { Providers } from '../components/Providers'
 
 export const metadata: Metadata = {
-  title: 'Sprint Retrospective',
-  description: 'Real-time collaborative retrospective tool',
+  title: 'VibeRetro - Real-Time Sprint Retrospectives',
+  description: 'Real-time collaborative retrospective tool with zero-config setup. Create cards, group insights, vote on priorities, and define action items.',
 }
 
 export default function RootLayout({
