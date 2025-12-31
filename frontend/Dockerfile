@@ -2,6 +2,14 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Accept build arguments with fallback to production URLs
+ARG NEXT_PUBLIC_API_URL=https://viberetroapi.marcote.net
+ARG NEXT_PUBLIC_SOCKET_URL=https://viberetroapi.marcote.net
+
+# Set as environment variables for the build
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_SOCKET_URL=${NEXT_PUBLIC_SOCKET_URL}
+
 # Copy frontend files
 COPY frontend/package*.json frontend/next.config.js frontend/tsconfig.json frontend/tailwind.config.ts frontend/postcss.config.js ./
 
@@ -15,7 +23,7 @@ COPY shared ../shared
 COPY frontend/src ./src
 COPY frontend/public ./public
 
-# Build Next.js app
+# Build Next.js app with environment variables embedded
 RUN npm run build
 
 # Production image
