@@ -22,6 +22,11 @@ export default function DashboardPage() {
 
     try {
       // Get all session IDs from localStorage (user_* and host_* keys)
+      if (typeof window === 'undefined') {
+        setLoading(false);
+        return;
+      }
+
       const sessionIds = new Set<string>();
 
       for (let i = 0; i < localStorage.length; i++) {

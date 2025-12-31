@@ -29,7 +29,9 @@ export default function CreateSessionPage() {
       });
 
       // Store host ID in localStorage
-      localStorage.setItem(`host_${response.sessionId}`, response.hostId);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(`host_${response.sessionId}`, response.hostId);
+      }
 
       // Redirect to session page
       router.push(`/session/${response.sessionId}`);

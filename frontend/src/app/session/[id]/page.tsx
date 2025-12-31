@@ -25,6 +25,8 @@ export default function SessionPage() {
 
   useEffect(() => {
     // Check if we have an existing user ID for this session (for reconnection)
+    if (typeof window === 'undefined') return;
+
     const userId = localStorage.getItem(`user_${sessionId}`);
     if (userId) {
       // We have a stored user ID, automatically rejoin
@@ -65,13 +67,15 @@ export default function SessionPage() {
   const handleJoin = () => {
     if (displayName.trim()) {
       // Store display name for reconnection
-      localStorage.setItem(`user_name_${sessionId}`, displayName);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(`user_name_${sessionId}`, displayName);
 
-      // Check if user is host
-      const hostId = localStorage.getItem(`host_${sessionId}`);
-      if (hostId) {
-        // Store hostId to pass to backend
-        localStorage.setItem('currentHostId', hostId);
+        // Check if user is host
+        const hostId = localStorage.getItem(`host_${sessionId}`);
+        if (hostId) {
+          // Store hostId to pass to backend
+          localStorage.setItem('currentHostId', hostId);
+        }
       }
 
       joinSession(sessionId, displayName);
@@ -80,7 +84,7 @@ export default function SessionPage() {
   };
 
   if (!joined) {
-    const hostId = localStorage.getItem(`host_${sessionId}`);
+    const hostId = typeof window !== 'undefined' ? localStorage.getItem(`host_${sessionId}`) : null;
     const isHostJoining = !!hostId;
 
     return (

@@ -32,6 +32,11 @@ export default function SessionHistoryPage() {
 
     try {
       // Get user ID from localStorage
+      if (typeof window === 'undefined') {
+        setLoading(false);
+        return;
+      }
+
       let userId = localStorage.getItem('dashboard_user_id');
 
       // Also check for session-specific user ID
